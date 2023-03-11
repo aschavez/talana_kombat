@@ -50,4 +50,6 @@ class CombatController:
         except DeadException as e:
             if first_player.is_dead() and not second_player.is_dead():
                 turns_description.append(f"{second_player.name} gana la pelea y aún le queda {second_player.energy_points} de energía")
+            if second_player.is_dead() and not first_player.is_dead():
+                turns_description.append(f"{first_player.name} gana la pelea y aún le queda {first_player.energy_points} de energía")
         return turns_description

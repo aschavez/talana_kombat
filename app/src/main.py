@@ -26,7 +26,7 @@ class CombatResource:
             combat = CombatController([player_tonyn, player_arnaldor])
             combat.set_commands(combat_data['player1'], combat_data['player2'])
             turns_description = combat.play()
-            resp.body = json.dumps({
+            resp.text = json.dumps({
                 'winner': str(player_tonyn) if not player_tonyn.is_dead() else str(player_arnaldor),
                 'turns_desc': turns_description,
             })

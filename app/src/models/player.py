@@ -22,14 +22,14 @@ class PlayerModel:
 
     def is_special_move(self, turn_command: str) -> tuple[bool, list, typing.Union[str, None]]:
         for k, v in self.special_moves.items():
-            if k in turn_command:
+            if k in turn_command.upper():
                 add_moves = turn_command[:-len(k)]
                 return True, list(add_moves), v
         return False, [], None
 
     def is_normal_move(self, command: str) -> tuple[bool, typing.Union[str, None]]:
-        if command in self.moves:
-            return True, self.moves[command]
+        if command.upper() in self.moves:
+            return True, self.moves[command.upper()]
         else:
             return False, None
 
@@ -42,7 +42,7 @@ class PlayerModel:
     def describe_moves(self, moves: list, is_only: bool = True) -> str:
         if len(moves) == 0: return ''
 
-        list_moves_desc = [config.moves_desc[self.direction][m] for m in moves]
+        list_moves_desc = [config.moves_desc[self.direction][m.upper()] for m in moves]
         if is_only:
             if len(list_moves_desc) == 1:
                 return f" {list_moves_desc[0]}"
@@ -52,18 +52,21 @@ class PlayerModel:
             return f" {', '.join(list_moves_desc)} y"
 
     def execute_command(self, turn: int) -> tuple[str, int]:
-        is_sm, add_moves, sm = self.is_special_move(self.turn_commands[turn])
-        if is_sm:
-            return f"{self.name}{self.describe_moves(add_moves, False)} {random.choice(config.special_words)} un {sm['name']}", sm['energy_points']
+        try:
+            is_sm, add_moves, sm = self.is_special_move(self.turn_commands[turn])
+            if is_sm:
+                return f"{self.name}{self.describe_moves(add_moves, False)} {random.choice(config.special_words)} un {sm['name']}", sm['energy_points']
 
-        is_nm, nm = self.is_normal_move(self.commands['golpes'][turn])
-        if is_nm:
-            return f"{self.name}{self.describe_moves(list(self.commands['movimientos'][turn]), False)} da {nm['name']}", nm['energy_points']
+            is_nm, nm = self.is_normal_move(self.commands['golpes'][turn])
+            if is_nm:
+                return f"{self.name}{self.describe_moves(list(self.commands['movimientos'][turn]), False)} da {nm['name']}", nm['energy_points']
 
-        if len(self.commands['movimientos'][turn]) > 0:
-            return f"{self.name}{self.describe_moves(list(self.commands['movimientos'][turn]))}", 0
+            if len(self.commands['movimientos'][turn]) > 0:
+                return f"{self.name}{self.describe_moves(list(self.commands['movimientos'][turn]))}", 0
 
-        return f"{self.name} no hace nada", 0
+            return f"{self.name} no hace nada", 0
+        except IndexError:
+            return f"{self.name} no hace nada", 0
 
     def __repr__(self):
         return f"<{self.name} {self.lastname} | {self.energy_points} pts>"
