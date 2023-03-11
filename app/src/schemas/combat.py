@@ -3,8 +3,8 @@ from schematics.types import ListType, StringType, ModelType
 
 
 class PlayerSchema(Model):
-    movimientos = ListType(StringType(), required=True)
-    golpes = ListType(StringType(), required=True)
+    movimientos = ListType(StringType(max_length=5), required=True)
+    golpes = ListType(StringType(max_length=1), required=True)
 
 
 class CombatSchema(Model):
